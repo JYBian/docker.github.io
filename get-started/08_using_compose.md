@@ -85,32 +85,32 @@ docker run -dp 3000:3000 `
 1. First, let's define the service entry and the image for the container. We can pick any name for the service. 
    The name will automatically become a network alias, which will be useful when defining our MySQL service.
 
-    ```yaml hl_lines="4 5"
+```yaml hl_lines="4 5"
     version: "3.7"
 
     services:
       app:
         image: node:12-alpine
-    ```
+```
 
 1. Typically, you will see the command close to the `image` definition, although there is no requirement on ordering.
    So, let's go ahead and move that into our file.
 
-    ```yaml hl_lines="6"
+```yaml hl_lines="6"
     version: "3.7"
 
     services:
       app:
         image: node:12-alpine
         command: sh -c "yarn install && yarn run dev"
-    ```
+```
 
 
 1. Let's migrate the `-p 3000:3000` part of the command by defining the `ports` for the service. We will use the
    [short syntax](https://docs.docker.com/compose/compose-file/#short-syntax-1) here, but there is also a more verbose 
    [long syntax](https://docs.docker.com/compose/compose-file/#long-syntax-1) available as well.
 
-    ```yaml hl_lines="7 8"
+```yaml hl_lines="7 8"
     version: "3.7"
 
     services:
@@ -119,14 +119,14 @@ docker run -dp 3000:3000 `
         command: sh -c "yarn install && yarn run dev"
         ports:
           - 3000:3000
-    ```
+```
 
 1. Next, we'll migrate both the working directory (`-w /app`) and the volume mapping (`-v "$(pwd):/app"`) by using
    the `working_dir` and `volumes` definitions. Volumes also has a [short](https://docs.docker.com/compose/compose-file/#short-syntax-3) and [long](https://docs.docker.com/compose/compose-file/#long-syntax-3) syntax.
 
     One advantage of Docker Compose volume definitions is we can use relative paths from the current directory.
 
-    ```yaml hl_lines="9 10 11"
+```yaml hl_lines="9 10 11"
     version: "3.7"
 
     services:
@@ -138,11 +138,11 @@ docker run -dp 3000:3000 `
         working_dir: /app
         volumes:
           - ./:/app
-    ```
+```
 
 1. Finally, we need to migrate the environment variable definitions using the `environment` key.
 
-    ```yaml hl_lines="12 13 14 15 16"
+```yaml hl_lines="12 13 14 15 16"
     version: "3.7"
 
     services:
@@ -159,7 +159,7 @@ docker run -dp 3000:3000 `
           MYSQL_USER: root
           MYSQL_PASSWORD: secret
           MYSQL_DB: todos
-    ```
+```
 
   
 ### Defining the MySQL Service
@@ -189,7 +189,7 @@ docker run -d `
 1. We will first define the new service and name it `mysql` so it automatically gets the network alias. We'll
    go ahead and specify the image to use as well.
 
-    ```yaml hl_lines="6 7"
+```yaml hl_lines="6 7"
     version: "3.7"
 
     services:
@@ -197,14 +197,14 @@ docker run -d `
         # The app service definition
       mysql:
         image: mysql:5.7
-    ```
+```
 
 1. Next, we'll define the volume mapping. When we ran the container with `docker run`, the named volume was created
    automatically. However, that doesn't happen when running with Compose. We need to define the volume in the top-level
    `volumes:` section and then specify the mountpoint in the service config. By simply providing only the volume name,
    the default options are used. There are [many more options available](https://docs.docker.com/compose/compose-file/#volume-configuration-reference) though.
 
-    ```yaml hl_lines="8 9 10 11 12"
+```yaml hl_lines="8 9 10 11 12"
     version: "3.7"
 
     services:
@@ -217,11 +217,11 @@ docker run -d `
     
     volumes:
       todo-mysql-data:
-    ```
+```
 
 1. Finally, we only need to specify the environment variables.
 
-    ```yaml hl_lines="10 11 12"
+```yaml hl_lines="10 11 12"
     version: "3.7"
 
     services:
@@ -237,7 +237,7 @@ docker run -d `
     
     volumes:
       todo-mysql-data:
-    ```
+```
 
 At this point, our complete `docker-compose.yml` should look like this:
 
